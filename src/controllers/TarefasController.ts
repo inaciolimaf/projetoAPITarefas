@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { prismaC } from '../prisma'
 import { AppError } from "../errors/AppError";
+import Zod from "zod"
 
 export class TarefasController {
     public async list(request: Request, response: Response) {
@@ -18,7 +19,11 @@ export class TarefasController {
     }
 
     public async create(request: Request, response: Response) {
-        const { titulo, descricao } = request.body;
+        const bodySchema = Zod.object({
+            titulo: Zod.string().min(3).nullish(),
+            descricao: Zod.string().min(3).nullish()
+        }).strict()
+        const { titulo, descricao } = bodySchema.parse(request.body);
         if (!titulo) throw new AppError("Faltando titulo no body")
         if (!descricao) throw new AppError("Faltando descricao no body")
         const tarefa = await prismaC.tarafas.create({
@@ -31,8 +36,25 @@ export class TarefasController {
     }
     public async update(request: Request, response: Response) {
         const { id } = request.params
-        const { titulo, descricao } = request.body;
+        const bodySchema = Zod.object({
+            titulo: Zod.string().min(3).nullish(),
+            descricao: Zod.string().min(3).nullish(),
+            status: Zod.string().nullish()
+        }).strict()
+        const { titulo, descricao, status }: {
+            titulo: string | undefined;
+            descricao: string | undefined;
+            status: string | undefined;
+          } = {
+            titulo: bodySchema.parse(request.body).titulo || undefined,
+            descricao: bodySchema.parse(request.body).descricao || undefined,
+            status: bodySchema.parse(request.body).status || undefined,
+          };
         let tarefa = null;
+        let data = {}
+        if (titulo) data = {titulo}
+        if (descricao) data = {...data, descricao}
+        if (status) data = {...data, status}
         try {
             tarefa = await prismaC.tarafas.update({
                 where: {
@@ -40,7 +62,8 @@ export class TarefasController {
                 },
                 data: {
                     titulo,
-                    descricao
+                    descricao,
+                    status
                 }
             });
         } catch (PrismaClientKnownRequestError) {
