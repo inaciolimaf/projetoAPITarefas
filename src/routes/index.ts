@@ -5,4 +5,4 @@ const routes = Router();
 
 routes.use('/tarefas', tarefasRoutes);
 
-export {routes};
+export { routes };

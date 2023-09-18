@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import { TarefasController } from '../controllers/TarefasController';
 
 const tarefasRoutes = Router();

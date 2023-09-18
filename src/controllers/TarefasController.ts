@@ -45,16 +45,16 @@ export class TarefasController {
             titulo: string | undefined;
             descricao: string | undefined;
             status: string | undefined;
-          } = {
+        } = {
             titulo: bodySchema.parse(request.body).titulo || undefined,
             descricao: bodySchema.parse(request.body).descricao || undefined,
             status: bodySchema.parse(request.body).status || undefined,
-          };
+        };
         let tarefa = null;
         let data = {}
-        if (titulo) data = {titulo}
-        if (descricao) data = {...data, descricao}
-        if (status) data = {...data, status}
+        if (titulo) data = { titulo }
+        if (descricao) data = { ...data, descricao }
+        if (status) data = { ...data, status }
         try {
             tarefa = await prismaC.tarafas.update({
                 where: {

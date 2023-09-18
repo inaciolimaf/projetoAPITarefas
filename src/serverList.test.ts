@@ -1,12 +1,12 @@
 import request from "supertest"
-import {app} from './server'
+import { app } from './server'
 import { prismaC } from "./prisma"
 
-describe("List Tarefas API", ()=>{
-    beforeAll(async ()=>{
+describe("List Tarefas API", () => {
+    beforeAll(async () => {
         await prismaC.tarafas.deleteMany({})
     })
-    it("Deve listar as tarefas", async ()=>{
+    it("Deve listar as tarefas", async () => {
         await request(app).post('/tarefas/create').send({
             "titulo": "Your Title",
             "descricao": "Your Description"
